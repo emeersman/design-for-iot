@@ -13,7 +13,10 @@
 // credentials.
 #include "config.h"
 
-/************************ Example Starts Here *******************************/
+/************************ Code Starts Here *******************************/
+
+// Adafruit I/O dashboard can be viewed at:
+// https://io.adafruit.com/meerskat/dashboards/io-sensor-test
 
 // Define digital pin constants
 #define BUTTON_PIN 4
