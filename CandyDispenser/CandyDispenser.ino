@@ -2,7 +2,9 @@
 // https://learn.adafruit.com/adafruit-arduino-lesson-14-servo-motors/arduino-code-for-sweep
 // as well as the Adafruit OLED example here:
 // https://github.com/adafruit/Adafruit_SSD1306/tree/master/examples/ssd1306_128x32_i2c
-// 
+// and the Adafruit ADPS9960 digital proximity/gesture sensor guide here:
+// https://learn.adafruit.com/adafruit-apds9960-breakout/arduino-wiring-and-test
+//
 // The Adafruit I/O dashboard referenced in this code can be viewed 
 // at: https://io.adafruit.com/meerskat/dashboards/candy-dispenser
 
@@ -15,6 +17,7 @@
 
 /************************ Code Starts Here *******************************/
 
+#include <Adafruit_APDS9960.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_SSD1306.h>
@@ -38,6 +41,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // Create servo instance
 Servo servo;
 
+// Create APDS9960 instance
+Adafruit_APDS9960 apds;
+
 // Variable to capture current servo position in degrees.
 int servo_angle = 0;
 
@@ -58,6 +64,16 @@ void setup() {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
+
+  // Initialize ADPS9960
+  if(!apds.begin()){
+    Serial.println("failed to initialize device! Please check your wiring.");
+  }
+  else Serial.println("Device initialized!");
+
+  // Gesture mode will be entered once proximity mode senses something close
+  apds.enableProximity(true);
+  apds.enableGesture(true);
 
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
@@ -111,8 +127,16 @@ void loop() {
     delay(1000);
   }
 
+  // Dispense candy when the ADPS9960 senses a left or right gesture
+  uint8_t gesture = apds.readGesture();
+  Serial.println(gesture);
+  if(gesture == APDS9960_LEFT || gesture == APDS9960_RIGHT) {
+    dispenseCandy();
+    delay(1000);
+  }
+
   // Call draw text function with spaces for newline separation on OLED.
-  drawText("Push button to       dispense candy");
+  drawText("Swipe hand to        dispense candy");
 }
 
 // Function to read button presses from Adafruit IO and call
