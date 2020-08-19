@@ -89,6 +89,7 @@ def on_connect(client, userdata, flags, rc):
 # Handles what happens when the MQTT client receives a message
 def on_message(client, userdata, msg):
     print("Topic: ", msg.topic + "\nMessage: " + str(msg.payload))
+    global date
     if (msg.topic == locationFeed):
         deserializedJson = json.loads(msg.payload)
         # Save location name (of ESP8266)
