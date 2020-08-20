@@ -200,8 +200,6 @@ void loop() {
     int currBrightness = analogRead(PHOTOCELL_PIN);
     if (abs(currBrightness - brightness) > BRIGHTNESS_THRESHOLD) {
       brightness = currBrightness;
-      // Subtract from max reading value because LED strip should get brighter if the sensor input is darker
-      currBrightness = 1024 - currBrightness;
       // Map brightness reading to LED brightness scale
       int scaledBrightness = map(currBrightness, 0, 1024, 0, 255);
       strip.setBrightness(scaledBrightness);
