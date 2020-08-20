@@ -101,8 +101,10 @@ def on_message(client, userdata, msg):
         # Receive current/former day temperatures
         global temperature
         temperature = deserializedJson["temperature"]
+        temperature = round(temperature, 2)
         global prevTemperature
         prevTemperature = deserializedJson["prev_temperature"]
+        prevTemperature = round(prevTemperature, 2)
 
         # Update date variable
         date = datetime.now().date()
@@ -119,8 +121,8 @@ def on_message(client, userdata, msg):
 # Reads and outputs historical temperature data for the current date. Always publishes
 # to an MQTT feed and optionally posts a graph of the data to Twitter.
 def publish_historical_data(shouldPostData = False):
-    historicalData = get_historical_data()        
-    serializedData = json.dumps({"historical": historicalData})
+    historicalData, historicalTemps = get_historical_data()        
+    serializedData = json.dumps({"historical": historicalTemps})
     client.publish(historicalFeed, serializedData, 0, True) 
     if (shouldPostData):
         graph_historical_data(historicalData)
@@ -132,11 +134,11 @@ def publish_historical_data(shouldPostData = False):
 # so that the information is based on past data instead of the current day forecast.
 def update_historical_file():
     # Remove curly brace at the end of the file
-    with open('/home/shoofly/Documents/seattle_data.json', 'rb+') as f:
+    with open(os.path.relpath('/home/shoofly/Documents/seattle_data.json'), 'rb+') as f:
         f.seek(-1, os.SEEK_END)
         f.truncate()
     # Write the previuos date and temperature to the end of the file
-    with open('/home/shoofly/Documents/seattle_data.json', 'a') as g:
+    with open(os.path.relpath('/home/shoofly/Documents/seattle_data.json'), 'a') as g:
         prevDate = (datetime.now() - timedelta(1)).strftime('%Y-%m-%d')
         g.write(", \"" + prevDate + "\": " + str(prevTemperature) + "}")
 
@@ -147,13 +149,15 @@ def update_historical_file():
 def get_historical_data():
     dateStr = str(date)
     historicalArray = []
+    historicalTemps = []
     # Get all historical temperatures since 1979
-    with open('/home/shoofly/Documents/seattle_data.json') as f:
+    with open(os.path.relpath('/home/shoofly/Documents/seattle_data.json')) as f:
         data = json.load(f)
     # Pull out each temperature matching the current month/day
     for key, value in data.items():
         if (key[5:] == dateStr[5:]):
             historicalArray.append({"date": key, "temp": value})
+            historicalTemps.append(round(value))
             # Track historical high and low temperatures for the current day
             if (value > historicalHighTemp):
                 global historicalHighTemp
@@ -168,6 +172,7 @@ def get_historical_data():
     # Append the forecast for the current day to this array so it will be published to the 
     # MQTT feed and appear in the graph
     historicalArray.append({"date": dateStr, "temp": temperature})
+    historicalTemps.append(round(temperature))
     return historicalArray
 
 
