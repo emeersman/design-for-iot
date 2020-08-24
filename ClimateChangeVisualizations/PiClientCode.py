@@ -155,7 +155,7 @@ def get_historical_data():
     global historicalHighYear 
     historicalHighYear = ""
     global historicalLowTemp
-    historicalLowTemp = 0.0
+    historicalLowTemp = 100.0
     global historicalLowYear 
     historicalLowYear = ""
     # Get all historical temperatures since 1979
