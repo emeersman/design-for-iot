@@ -150,6 +150,14 @@ def get_historical_data():
     dateStr = str(date)
     historicalArray = []
     historicalTemps = []
+    global historicalHighTemp
+    historicalHighTemp = 0.0
+    global historicalHighYear 
+    historicalHighYear = ""
+    global historicalLowTemp
+    historicalLowTemp = 0.0
+    global historicalLowYear 
+    historicalLowYear = ""
     # Get all historical temperatures since 1979
     with open(os.path.relpath('/home/shoofly/Documents/seattle_data.json')) as f:
         data = json.load(f)
@@ -160,14 +168,10 @@ def get_historical_data():
             historicalTemps.append(round(value))
             # Track historical high and low temperatures for the current day
             if (value > historicalHighTemp):
-                global historicalHighTemp
                 historicalHighTemp = value
-                global historicalHighYear
                 historicalHighYear = key[0:4]
             elif (value < historicalLowTemp):
-                global historicalLowTemp
                 historicalLowTemp = value
-                global historicalLowYear
                 historicalLowYear = key[0:4]
     # Append the forecast for the current day to this array so it will be published to the 
     # MQTT feed and appear in the graph
@@ -203,6 +207,7 @@ def graph_historical_data(data):
     global dailyPlotName
     dailyPlotName = "/home/shoofly/Documents/" + str(date) + "_SeattleHistoricalPlot.png"
     plt.savefig(dailyPlotName, bbox_inches = 'tight', pad_inches = 0)
+    plt.clf()
 
 
 # Posts the historical data plot to Twitter with a descriptive caption.
