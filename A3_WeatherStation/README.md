@@ -1,0 +1,3 @@
+# MQTT Weather Station
+
+I created a weather sensor platform hooked up to an ESP8266 microcontroller that read temperature/pressure/humidity data and published it to an MQTT broker. The platform also called an API to read the outside temperature for my zip code and published that to a separate MQTT feed. An OLED display on the sensor board subscribed to the MQTT feeds and showed the most current information stored on the broker. I set up a Raspberry Pi on my local network to host the MQTT broker. The project involved wiring sensors, processing data, sending signals across MQTT feeds, and displaying relevant information to a user.

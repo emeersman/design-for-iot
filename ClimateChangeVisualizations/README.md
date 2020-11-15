@@ -44,3 +44,7 @@ This project supports a button and photoresistor as sources of physical input. I
 The OLED displays the name of the location and specific data about the mode. In the daily forecast mode, the OLED shows the current temperature in the given location as well as the weekly high and low forecasted temperatures. In historical mode, the OLED shows the temperature forecast for the current day as well as the historical high and low temperatures. It also shows the relevant years.
 
 Finally, the LED strip displays the high temperatures for the given mode converted to RGB values. The same algorithm is used to convert temperature to RGB for both the Twitter charts and the LED values. In daily mode, the pixels on the strip are divided into equal chunks, each of which shows the forecast temperature color for a given day. In historical mode, each pixel is mapped to a past year. 
+
+### Links
+
+- [Slide deck](https://docs.google.com/presentation/d/1sh2fnsEidd-P1hl1WDIlbbYviLF7PM8ENml-VVi_Rn0/edit?usp=sharing)
